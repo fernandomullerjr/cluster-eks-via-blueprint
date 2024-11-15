@@ -3,7 +3,7 @@
 
 <h1 align="center"> Projetos em EKS via Terraform </h1>
 
-![Amazon EKS + Terraform](https://github.com/fernandomullerjr/cluster-eks-via-blueprint/outros/imagens/amazon-eks-plus-terraform.png?raw=true)
+![Amazon EKS + Terraform](https://github.com/fernandomullerjr/cluster-eks-via-blueprint/tree/main/outros/imagens/amazon-eks-plus-terraform.png?raw=true)
 
 
 ## Descrição do projeto 
