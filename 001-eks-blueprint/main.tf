@@ -1,9 +1,11 @@
+# Configuração do provedor Kubernetes
 provider "kubernetes" {
   host                   = module.eks_blueprints.eks_cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.this.token
 }
 
+# Configuração do provedor Helm
 provider "helm" {
   kubernetes {
     host                   = module.eks_blueprints.eks_cluster_endpoint
@@ -12,6 +14,7 @@ provider "helm" {
   }
 }
 
+# Configuração do provedor Kubectl
 provider "kubectl" {
   apply_retry_count      = 10
   host                   = module.eks_blueprints.eks_cluster_endpoint
@@ -20,25 +23,26 @@ provider "kubectl" {
   token                  = data.aws_eks_cluster_auth.this.token
 }
 
+# Módulo EKS Blueprints
 module "eks_blueprints" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.21.0"
 
-  cluster_name    = local.name
+  cluster_name = local.name
 
-  # EKS Cluster VPC and Subnet mandatory config
+  # Configuração obrigatória do VPC e Subnet do cluster EKS
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
 
-  # EKS CONTROL PLANE VARIABLES
+  # Variáveis do plano de controle do EKS
   cluster_version = local.cluster_version
 
-  # List of Additional roles admin in the cluster
-  # Comment this section if you ARE NOT at an AWS Event, as the TeamRole won't exist on your site, or replace with any valid role you want
+  # Lista de funções adicionais com permissões de administrador no cluster
+  # Comente esta seção se você NÃO estiver em um evento da AWS, pois a TeamRole não existirá no seu site, ou substitua por qualquer função válida que você desejar
   map_roles = [
     {
       rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/TeamRole"
-      username = "ops-role" # The user name within Kubernetes to map to the IAM role
-      groups   = ["system:masters"] # A list of groups within Kubernetes to which the role is mapped; Checkout K8s Role and Rolebindings
+      username = "ops-role"         # Nome de usuário dentro do Kubernetes para mapear para a função IAM
+      groups   = ["system:masters"] # Lista de grupos dentro do Kubernetes aos quais a função é mapeada; Verifique Role e Rolebindings do K8s
     },
     {
       rolearn  = "arn:aws:iam::552925778543:role/eks-admin"
@@ -47,21 +51,21 @@ module "eks_blueprints" {
     }
   ]
 
- # List of map_users
+  # Lista de usuários mapeados
   map_users = [
     {
-      userarn  = data.aws_caller_identity.current.arn     # The ARN of the IAM user to add.
-      username = "fernandomullerjr8596"                                            # The user name within Kubernetes to map to the IAM role
-      groups   = ["system:masters", "eks-console-dashboard-full-access-group"]                                   # A list of groups within Kubernetes to which the role is mapped; Checkout K8s Role and Rolebindings
+      userarn  = data.aws_caller_identity.current.arn                          # ARN do usuário IAM a ser adicionado
+      username = "fernandomullerjr8596"                                        # Nome de usuário dentro do Kubernetes para mapear para a função IAM
+      groups   = ["system:masters", "eks-console-dashboard-full-access-group"] # Lista de grupos dentro do Kubernetes aos quais o usuário é mapeado; Verifique Role e Rolebindings do K8s
     },
     {
-      userarn  = "arn:aws:iam::552925778543:user/fernando"     # The ARN of the IAM user to add.
-      username = "fernando-devops"                                            # The user name within Kubernetes to map to the IAM role
+      userarn  = "arn:aws:iam::552925778543:user/fernando" # ARN do usuário IAM a ser adicionado
+      username = "fernando-devops"                         # Nome de usuário dentro do Kubernetes para mapear para a função IAM
       groups   = ["system:masters", "eks-console-dashboard-full-access-group"]
     },
     {
-      userarn  = "arn:aws:iam::552925778543:root"     # The ARN of the IAM user to add.
-      username = "root"                                            # The user name within Kubernetes to map to the IAM role
+      userarn  = "arn:aws:iam::552925778543:root" # ARN do usuário IAM a ser adicionado
+      username = "root"                           # Nome de usuário dentro do Kubernetes para mapear para a função IAM
       groups   = ["system:masters", "eks-console-dashboard-full-access-group"]
     }
   ]
@@ -98,7 +102,7 @@ module "vpc" {
   name = local.name
   cidr = local.vpc_cidr
 
-  azs  = local.azs
+  azs             = local.azs
   public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
   private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
 
@@ -113,7 +117,7 @@ module "vpc" {
   manage_default_route_table    = true
   default_route_table_tags      = { Name = "${local.name}-default" }
   manage_default_security_group = true
-  default_security_group_tags   = { Name = "${local.name}-default" }  
+  default_security_group_tags   = { Name = "${local.name}-default" }
 
   public_subnet_tags = {
     "kubernetes.io/cluster/${local.name}" = "shared"
@@ -125,7 +129,7 @@ module "vpc" {
     "kubernetes.io/role/internal-elb"     = "1"
   }
 
-    tags = local.tags
+  tags = local.tags
 }
 
 

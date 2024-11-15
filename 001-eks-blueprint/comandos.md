@@ -1,5 +1,8 @@
 
-# RESUMO
+# RESUMO - Comandos para subir e destruir o cluster EKS
+
+
+
 terraform apply -target=module.vpc -auto-approve
 terraform apply -target=module.eks_blueprints -auto-approve
 terraform apply -auto-approve

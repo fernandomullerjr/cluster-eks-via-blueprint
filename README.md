@@ -1,7 +1,7 @@
 # cluster-eks-via-blueprint
 
 
-<h1 align="center"> Projetos em EKS via Terraform </h1>
+<h1 align="center"> Projetos EKS via Terraform usando Blueprint </h1>
 
 ![Amazon EKS + Terraform](https://github.com/fernandomullerjr/cluster-eks-via-blueprint/blob/main/outros/imagens/amazon-eks-plus-terraform.png?raw=true)
 
@@ -28,7 +28,7 @@ Também adiciona 2 usuários(usuário root e um usuário comum) como administrad
 </details>
 
 
-[Lab09 - EKS via Blueprint + RBAC + Stack do Prometheus - Sem Github Actions](09-eks-blueprint/README.md)
+[Lab 002 - EKS via Blueprint + RBAC + Stack do Prometheus](002-eks-blueprint-com-grafana/README.md)
 <details> 
   <summary><b>Detalhes sobre o projeto</b> <em>(clique para visualizar)</em></summary>
 Projeto que cria um Cluster EKS via Terraform, usando Blueprint do EKS.<br/>
