@@ -37,15 +37,14 @@ module "eks_blueprints" {
   cluster_version = local.cluster_version
 
   # Lista de funções adicionais com permissões de administrador no cluster
-  # Comente esta seção se você NÃO estiver em um evento da AWS, pois a TeamRole não existirá no seu site, ou substitua por qualquer função válida que você desejar
   map_roles = [
     {
       rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/TeamRole"
-      username = "ops-role"         # Nome de usuário dentro do Kubernetes para mapear para a função IAM
-      groups   = ["system:masters"] # Lista de grupos dentro do Kubernetes aos quais a função é mapeada; Verifique Role e Rolebindings do K8s
+      username = "ops-role"
+      groups   = ["system:masters"]
     },
     {
-      rolearn  = "arn:aws:iam::552925778543:role/eks-admin"
+      rolearn  = "arn:aws:iam::${local.account_id}:role/eks-admin"
       username = "eks-admin"
       groups   = ["system:masters"]
     }
@@ -54,18 +53,18 @@ module "eks_blueprints" {
   # Lista de usuários mapeados
   map_users = [
     {
-      userarn  = data.aws_caller_identity.current.arn                          # ARN do usuário IAM a ser adicionado
-      username = "fernandomullerjr8596"                                        # Nome de usuário dentro do Kubernetes para mapear para a função IAM
-      groups   = ["system:masters", "eks-console-dashboard-full-access-group"] # Lista de grupos dentro do Kubernetes aos quais o usuário é mapeado; Verifique Role e Rolebindings do K8s
-    },
-    {
-      userarn  = "arn:aws:iam::552925778543:user/fernando" # ARN do usuário IAM a ser adicionado
-      username = "fernando-devops"                         # Nome de usuário dentro do Kubernetes para mapear para a função IAM
+      userarn  = data.aws_caller_identity.current.arn
+      username = local.username_1
       groups   = ["system:masters", "eks-console-dashboard-full-access-group"]
     },
     {
-      userarn  = "arn:aws:iam::552925778543:root" # ARN do usuário IAM a ser adicionado
-      username = "root"                           # Nome de usuário dentro do Kubernetes para mapear para a função IAM
+      userarn  = "arn:aws:iam::${local.account_id}:user/${local.username_2}"
+      username = local.username_2
+      groups   = ["system:masters", "eks-console-dashboard-full-access-group"]
+    },
+    {
+      userarn  = "arn:aws:iam::${local.account_id}:root"
+      username = "root"
       groups   = ["system:masters", "eks-console-dashboard-full-access-group"]
     }
   ]
@@ -83,15 +82,14 @@ module "eks_blueprints" {
   platform_teams = {
     admin = {
       users = [
-        data.aws_caller_identity.current.arn, "arn:aws:iam::552925778543:user/fernando", "arn:aws:iam::552925778543:root"
+        data.aws_caller_identity.current.arn,  
+        "arn:aws:iam::${local.account_id}:root"
       ]
     }
   }
 
   tags = local.tags
 }
-
-
 
 # VPC
 
