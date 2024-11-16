@@ -1,7 +1,4 @@
-# cluster-eks-via-blueprint
-
-
-<h1 align="center"> Projetos EKS via Terraform usando Blueprint </h1>
+<h1 align="center"> Cluster EKS via Terraform usando Blueprint </h1>
 
 ![Amazon EKS + Terraform](https://github.com/fernandomullerjr/cluster-eks-via-blueprint/blob/main/outros/imagens/amazon-eks-plus-terraform.png?raw=true)
 
