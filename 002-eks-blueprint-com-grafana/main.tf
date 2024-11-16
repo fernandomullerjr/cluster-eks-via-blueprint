@@ -28,6 +28,7 @@ module "eks_blueprints" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.21.0"
 
   cluster_name = local.name
+  worker_additional_security_group_ids = [aws_security_group.sg_adicional.id]
 
   # Configuração obrigatória do VPC e Subnet do cluster EKS
   vpc_id             = module.vpc.vpc_id
@@ -255,6 +256,32 @@ resource "kubectl_manifest" "rbac" {
       name: eks-console-dashboard-full-access-clusterrole
       apiGroup: rbac.authorization.k8s.io
   YAML
+
+  depends_on = [
+    module.eks_blueprints
+  ]
+}
+
+
+module "kubernetes_addons" {
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.21.0/modules/kubernetes-addons"
+
+  eks_cluster_id                = module.eks_blueprints.eks_cluster_id
+
+  enable_aws_load_balancer_controller  = true
+  enable_amazon_eks_aws_ebs_csi_driver = true
+  enable_metrics_server                = true
+  enable_kube_prometheus_stack         = true # (Opcional) O namespace para instalar a release.
+
+  kube_prometheus_stack_helm_config = {
+    name       = "kube-prometheus-stack"                                         # (Obrigatório) Nome da release.
+    #repository = "https://prometheus-community.github.io/helm-charts" # (Opcional) URL do repositório onde localizar o chart solicitado.
+    chart      = "kube-prometheus-stack"                                         # (Obrigatório) Nome do chart a ser instalado.
+    namespace  = "kube-prometheus-stack"                                         # (Opcional) O namespace para instalar a release.
+    values = [templatefile("${path.module}/values-stack.yaml", {
+      operating_system = "linux"
+    })]
+  }
 
   depends_on = [
     module.eks_blueprints
