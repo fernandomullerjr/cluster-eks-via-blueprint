@@ -25,7 +25,7 @@ provider "kubectl" {
 
 # Módulo EKS Blueprints
 module "eks_blueprints" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.21.0"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1"
 
   cluster_name = local.name
   worker_additional_security_group_ids = [aws_security_group.sg_adicional.id]
@@ -264,7 +264,7 @@ resource "kubectl_manifest" "rbac" {
 
 
 module "kubernetes_addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.21.0/modules/kubernetes-addons"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1/modules/kubernetes-addons"
 
   eks_cluster_id                = module.eks_blueprints.eks_cluster_id
 
