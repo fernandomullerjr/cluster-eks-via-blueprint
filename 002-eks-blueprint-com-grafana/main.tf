@@ -72,10 +72,29 @@ module "eks_blueprints" {
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
-    T3A_MICRO = {
+#    T3A_MICRO = {
+#      node_group_name = local.node_group_name
+#      instance_types  = ["t3a.micro"]
+#      subnet_ids      = module.vpc.private_subnets
+#      min_size     = 2
+#      max_size     = 10
+#      desired_size = 6
+#    },
+#    T3_MICRO = {
+#      node_group_name = local.node_group_name_2
+#      instance_types  = ["t3.micro"]
+#      subnet_ids      = module.vpc.private_subnets
+#      min_size     = 2
+#      max_size     = 10
+#      desired_size = 6
+#    },
+    T3_MEDIUM = {
       node_group_name = local.node_group_name
-      instance_types  = ["t3a.micro"]
+      instance_types  = ["t3.medium"]
       subnet_ids      = module.vpc.private_subnets
+      min_size     = 2
+      max_size     = 10
+      desired_size = 4
     }
   }
 

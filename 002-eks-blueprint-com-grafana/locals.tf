@@ -13,6 +13,7 @@ locals {
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
   node_group_name = "managed-ondemand"
+  node_group_name_2 = "managed-ondemand-2"
 
   tags = {
     Blueprint  = local.name
