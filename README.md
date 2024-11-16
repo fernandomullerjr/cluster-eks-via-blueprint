@@ -5,8 +5,6 @@
 
 ## Descrição do projeto 
 
-> Status do Projeto: :warning: (em desenvolvimento, em breve serão adicionados novos projetos de exemplo)
-
 <p align="justify">
   Coleção de projetos que efetuam o deploy de um cluster EKS usando o Terraform.<br/>
   Idéia deste repositório é fornecer manifestos testados e validados, contendo alguns cenários de clusters EKS que podemos precisar.<br/>
@@ -25,7 +23,7 @@ Também adiciona 2 usuários(usuário root e um usuário comum) como administrad
 </details>
 
 
-[Lab 002 - EKS via Blueprint + RBAC + Stack do Prometheus](002-eks-blueprint-com-grafana/README.md)
+[Lab 002 - EKS via Blueprint + RBAC + Stack do Grafana + Prometheus +AlertManager + Dashboards extras](002-eks-blueprint-com-grafana/README.md)
 <details> 
   <summary><b>Detalhes sobre o projeto</b> <em>(clique para visualizar)</em></summary>
 Projeto que cria um Cluster EKS via Terraform, usando Blueprint do EKS.<br/>
@@ -35,8 +33,9 @@ Efetua a instalação da stack kube-prometheus-stack, contendo:<br/>
 Prometheus<br/>
 Grafana<br/>
 AlertManager<br/>
-<br/>
 Grafana Dashboards<br/>
 São adicionados diversos dashboards úteis ao Grafana, que ajudam no gerenciamento dos clusters Kubernetes.<br/><br/>
 </details>
 
+
+> Status do Projeto: :warning: (em fase de melhorias, em breve serão adicionados novos projetos de exemplo)
