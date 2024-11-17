@@ -94,6 +94,7 @@ Exibe o plano de execução do Terraform, detalhando as ações que serão reali
 make plan
 ```
 
+
 ---
 
 ## **Execução faseada: Por que usar?**

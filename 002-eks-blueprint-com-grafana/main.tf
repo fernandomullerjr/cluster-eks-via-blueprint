@@ -28,7 +28,6 @@ module "eks_blueprints" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1"
 
   cluster_name = local.name
-  worker_additional_security_group_ids = [aws_security_group.sg_adicional.id]
 
   # Configuração obrigatória do VPC e Subnet do cluster EKS
   vpc_id             = module.vpc.vpc_id
@@ -72,29 +71,29 @@ module "eks_blueprints" {
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
-#    T3A_MICRO = {
-#      node_group_name = local.node_group_name
-#      instance_types  = ["t3a.micro"]
-#      subnet_ids      = module.vpc.private_subnets
-#      min_size     = 2
-#      max_size     = 10
-#      desired_size = 6
-#    },
-#    T3_MICRO = {
-#      node_group_name = local.node_group_name_2
-#      instance_types  = ["t3.micro"]
-#      subnet_ids      = module.vpc.private_subnets
-#      min_size     = 2
-#      max_size     = 10
-#      desired_size = 6
-#    },
+    #    T3A_MICRO = {
+    #      node_group_name = local.node_group_name
+    #      instance_types  = ["t3a.micro"]
+    #      subnet_ids      = module.vpc.private_subnets
+    #      min_size     = 2
+    #      max_size     = 10
+    #      desired_size = 6
+    #    },
+    #    T3_MICRO = {
+    #      node_group_name = local.node_group_name_2
+    #      instance_types  = ["t3.micro"]
+    #      subnet_ids      = module.vpc.private_subnets
+    #      min_size     = 2
+    #      max_size     = 10
+    #      desired_size = 6
+    #    },
     T3_MEDIUM = {
       node_group_name = local.node_group_name
       instance_types  = ["t3.medium"]
       subnet_ids      = module.vpc.private_subnets
-      min_size     = 2
-      max_size     = 10
-      desired_size = 4
+      min_size        = 2
+      max_size        = 10
+      desired_size    = 4
     }
   }
 
@@ -102,7 +101,7 @@ module "eks_blueprints" {
   platform_teams = {
     admin = {
       users = [
-        data.aws_caller_identity.current.arn,  
+        data.aws_caller_identity.current.arn,
         "arn:aws:iam::${local.account_id}:root"
       ]
     }
@@ -285,7 +284,7 @@ resource "kubectl_manifest" "rbac" {
 module "kubernetes_addons" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1/modules/kubernetes-addons"
 
-  eks_cluster_id                = module.eks_blueprints.eks_cluster_id
+  eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
   enable_aws_load_balancer_controller  = true
   enable_amazon_eks_aws_ebs_csi_driver = true
@@ -293,10 +292,10 @@ module "kubernetes_addons" {
   enable_kube_prometheus_stack         = true # (Opcional) O namespace para instalar a release.
 
   kube_prometheus_stack_helm_config = {
-    name       = "kube-prometheus-stack"                                         # (Obrigatório) Nome da release.
+    name = "kube-prometheus-stack" # (Obrigatório) Nome da release.
     #repository = "https://prometheus-community.github.io/helm-charts" # (Opcional) URL do repositório onde localizar o chart solicitado.
-    chart      = "kube-prometheus-stack"                                         # (Obrigatório) Nome do chart a ser instalado.
-    namespace  = "kube-prometheus-stack"                                         # (Opcional) O namespace para instalar a release.
+    chart     = "kube-prometheus-stack" # (Obrigatório) Nome do chart a ser instalado.
+    namespace = "kube-prometheus-stack" # (Opcional) O namespace para instalar a release.
     values = [templatefile("${path.module}/values-stack.yaml", {
       operating_system = "linux"
     })]

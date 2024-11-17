@@ -38,4 +38,6 @@ São adicionados diversos dashboards úteis ao Grafana, que ajudam no gerenciame
 </details>
 
 
-> Status do Projeto: :warning: (em fase de melhorias, em breve serão adicionados novos projetos de exemplo)
+---
+
+> Status dos Projetos: :warning: (em fase de melhorias, em breve serão adicionados novos projetos de exemplo)

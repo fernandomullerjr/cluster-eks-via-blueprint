@@ -50,3 +50,13 @@ terraform.rc
 *~
 *.swp
 *.bak
+
+# Diretórios e arquivos do Terraform - v2
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+**/.terraform/*
+**/terraform.tfstate
+**/terraform.tfstate.backup
+**/.terraform.lock.hcl

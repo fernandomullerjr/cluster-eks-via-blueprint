@@ -94,6 +94,28 @@ Exibe o plano de execução do Terraform, detalhando as ações que serão reali
 make plan
 ```
 
+### **6. `make grafana`**
+Para realizar o port-forward do **Grafana** e acessar via navegador:
+
+**Exemplo de uso:**
+```bash
+make grafana
+```
+
+O Grafana estará acessível em `http://localhost:8080`. (Para acessar a partir da sua máquina hospedeira, necessário verificar o endereço ip da VM, WSL ou Container Docker onde voce está fazendo o mapeamento)
+
+
+### **7. `make prometheus`**
+Para realizar o port-forward do **Prometheus** e acessar via navegador:
+
+**Exemplo de uso:**
+```bash
+make prometheus
+```
+
+O Prometheus estará acessível em `http://localhost:9191`. (Para acessar a partir da sua máquina hospedeira, necessário verificar o endereço ip da VM, WSL ou Container Docker onde voce está fazendo o mapeamento)
+
+
 ---
 
 ## **Execução faseada: Por que usar?**
