@@ -4,8 +4,9 @@
 # Variáveis
 TF := terraform                 # Comando do Terraform
 AUTO_APPROVE := -auto-approve   # Flag para evitar prompts de confirmação
-TARGET_VPC := -target=module.vpc                # Target específico para a VPC
-TARGET_EKS := -target=module.eks_blueprints     # Target específico para o cluster EKS
+TARGET_VPC := -target=module.vpc                      # Target específico para a VPC
+TARGET_EKS := -target=module.eks_blueprints           # Target específico para o cluster EKS
+TARGET_ADDONS := -target=module.kubernetes_addons     # Target específico para os addons Kubernetes
 
 # Cores
 COLOR_RESET := \033[0m
@@ -28,7 +29,7 @@ all:
 	@echo "$(COLOR_SUCCESS)  make prometheus$(COLOR_RESET)  - Realiza o port-forward para o Prometheus"
 
 # Criação dos recursos (apply)
-apply: apply-vpc apply-eks apply-all
+apply: apply-vpc apply-eks apply-addons apply-all
 
 apply-vpc:
 	@echo "$(COLOR_INFO)==> Aplicando a infraestrutura de rede (VPC)...$(COLOR_RESET)"
@@ -40,13 +41,23 @@ apply-eks:
 	$(TF) apply $(TARGET_EKS) $(AUTO_APPROVE)
 	@echo "$(COLOR_SUCCESS)Cluster EKS criado com sucesso.$(COLOR_RESET)"
 
+apply-addons:
+	@echo "$(COLOR_INFO)==> Aplicando os addons Kubernetes...$(COLOR_RESET)"
+	$(TF) apply $(TARGET_ADDONS) $(AUTO_APPROVE)
+	@echo "$(COLOR_SUCCESS)Addons aplicados com sucesso.$(COLOR_RESET)"
+
 apply-all:
 	@echo "$(COLOR_INFO)==> Aplicando os demais recursos...$(COLOR_RESET)"
 	$(TF) apply $(AUTO_APPROVE)
 	@echo "$(COLOR_SUCCESS)Todos os recursos aplicados com sucesso.$(COLOR_RESET)"
 
 # Destruição dos recursos (destroy)
-destroy: destroy-eks destroy-vpc destroy-all
+destroy: destroy-addons destroy-eks destroy-vpc destroy-all
+
+destroy-addons:
+	@echo "$(COLOR_WARNING)==> Removendo os addons Kubernetes...$(COLOR_RESET)"
+	$(TF) destroy $(TARGET_ADDONS) $(AUTO_APPROVE)
+	@echo "$(COLOR_SUCCESS)Addons removidos com sucesso.$(COLOR_RESET)"
 
 destroy-eks:
 	@echo "$(COLOR_WARNING)==> Removendo o cluster EKS...$(COLOR_RESET)"

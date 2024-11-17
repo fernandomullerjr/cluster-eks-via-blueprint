@@ -15,19 +15,25 @@ terraform apply -target=module.vpc -auto-approve
 # 2. Criar os recursos do cluster EKS (com o módulo eks_blueprints)
 terraform apply -target=module.eks_blueprints -auto-approve
 
-# 3. Aplicar os demais recursos dependentes
+# 3. Aplicar os addons configurados no cluster EKS
+terraform apply -target=module.addons -auto-approve
+
+# 4. Aplicar os demais recursos dependentes
 terraform apply -auto-approve
 ```
 
 ### **Explicação**
 1. **`terraform apply -target=module.vpc`:**  
-   Este comando cria exclusivamente a infraestrutura de rede (VPC) que será usada pelo cluster EKS. Executá-lo isoladamente é importante porque o cluster EKS depende da VPC estar configurada corretamente.
+   Cria a infraestrutura de rede necessária para o cluster, garantindo que todas as sub-redes, gateways e rotas estejam configuradas antes de avançar.
 
 2. **`terraform apply -target=module.eks_blueprints`:**  
-   Após a criação da VPC, o próximo passo é provisionar o cluster EKS. Isso inclui o controle de planos de dados e nós de trabalho, usando o módulo `eks_blueprints`. Este comando garante que apenas os recursos relacionados ao EKS sejam criados neste momento.
+   Configura o cluster EKS utilizando o módulo `eks_blueprints`. Isso inclui o controle do plano de dados e dos nós de trabalho.
 
-3. **`terraform apply`:**  
-   Finalmente, os recursos adicionais que dependem do EKS e da VPC são aplicados. Este comando utiliza o restante do plano Terraform, assegurando que todas as dependências já estejam configuradas.
+3. **`terraform apply -target=module.addons`:**  
+   Instala os addons configurados, como Prometheus, Grafana e dashboards, utilizando o `values-stack.yaml` para personalizar as opções.
+
+4. **`terraform apply`:**  
+   Conclui a aplicação de todos os recursos restantes que dependem da infraestrutura e do cluster criados nas etapas anteriores.
 
 ---
 
@@ -35,25 +41,31 @@ terraform apply -auto-approve
 
 ### **Comandos**
 ```bash
-# 1. Destruir os recursos do cluster EKS
+# 1. Remover os addons configurados no cluster
+terraform destroy -target=module.addons -auto-approve
+
+# 2. Destruir os recursos do cluster EKS
 terraform destroy -target=module.eks_blueprints -auto-approve
 
-# 2. Destruir a infraestrutura de rede (VPC)
+# 3. Destruir a infraestrutura de rede (VPC)
 terraform destroy -target=module.vpc -auto-approve
 
-# 3. Remover os demais recursos
+# 4. Remover os demais recursos
 terraform destroy -auto-approve
 ```
 
 ### **Explicação**
-1. **`terraform destroy -target=module.eks_blueprints`:**  
-   Este comando remove os recursos do cluster EKS, como nós de trabalho e controladores. É crucial destruir o cluster antes da VPC, pois o EKS depende da rede para funcionar.
+1. **`terraform destroy -target=module.addons`:**  
+   Remove os addons instalados, garantindo que dependências relacionadas aos serviços, como Prometheus e Grafana, sejam removidas antes de destruir o cluster.
 
-2. **`terraform destroy -target=module.vpc`:**  
-   Após destruir o cluster, a infraestrutura de rede (VPC) é removida. Como o cluster já foi apagado, a VPC pode ser destruída sem causar conflitos.
+2. **`terraform destroy -target=module.eks_blueprints`:**  
+   Apaga o cluster EKS, incluindo os nós de trabalho e recursos relacionados ao Kubernetes.
 
-3. **`terraform destroy`:**  
-   Por último, quaisquer recursos adicionais que não foram destruídos nos passos anteriores são removidos. Isso garante que o ambiente seja completamente limpo.
+3. **`terraform destroy -target=module.vpc`:**  
+   Após a remoção do cluster, a infraestrutura de rede (VPC) é destruída sem causar dependências não resolvidas.
+
+4. **`terraform destroy`:**  
+   Finaliza a remoção de quaisquer recursos restantes, limpando o ambiente.
 
 ---
 

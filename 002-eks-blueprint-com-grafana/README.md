@@ -47,10 +47,11 @@ Exibe os comandos disponíveis no Makefile e uma breve descrição do que cada u
 ---
 
 ### **2. `make apply`**
-Executa a criação dos recursos Terraform em três etapas:
-1. **Rede (VPC):** Cria a infraestrutura de rede.
-2. **Cluster EKS:** Cria o cluster Kubernetes.
-3. **Recursos adicionais:** Aplica todos os demais recursos configurados no Terraform.
+Executa a criação de todos os recursos Terraform, dividindo o processo em quatro etapas principais:
+1. **Infraestrutura de Rede (VPC):** Cria a VPC e configura sub-redes, gateways e rotas.
+2. **Cluster EKS:** Provisiona o cluster Kubernetes.
+3. **Addons (Recursos Adicionais):** Aplica os addons configurados, como Prometheus e Grafana.
+4. **Demais Recursos:** Configura os recursos que dependem das etapas anteriores.
 
 **Exemplo de uso:**
 ```bash
@@ -60,10 +61,11 @@ make apply
 ---
 
 ### **3. `make destroy`**
-Executa a destruição dos recursos Terraform em ordem inversa:
-1. **Cluster EKS:** Remove o cluster Kubernetes.
-2. **Rede (VPC):** Remove a infraestrutura de rede.
-3. **Recursos adicionais:** Remove os recursos restantes.
+Executa a destruição de todos os recursos Terraform em ordem inversa:
+1. **Addons:** Remove recursos adicionais (ex.: Grafana, Prometheus).
+2. **Cluster EKS:** Apaga o cluster Kubernetes.
+3. **Infraestrutura de Rede (VPC):** Remove a VPC.
+4. **Demais Recursos:** Finaliza a destruição de quaisquer dependências restantes.
 
 **Exemplo de uso:**
 ```bash
@@ -103,7 +105,11 @@ make grafana
 ```
 
 O Grafana estará acessível em `http://localhost:8080`. (Para acessar a partir da sua máquina hospedeira, necessário verificar o endereço ip da VM, WSL ou Container Docker onde voce está fazendo o mapeamento)
-
+Por padrão, o Grafana vem com os seguintes usuário e senha:
+```bash
+admin
+prom-operator
+```
 
 ### **7. `make prometheus`**
 Para realizar o port-forward do **Prometheus** e acessar via navegador:
@@ -159,12 +165,16 @@ O Makefile divide a execução em fases para:
 VPC criada com sucesso.
 ==> Aplicando o cluster EKS...
 Cluster EKS criado com sucesso.
+==> Aplicando os addons (Grafana, Prometheus)...
+Addons configurados com sucesso.
 ==> Aplicando os demais recursos...
 Todos os recursos aplicados com sucesso.
 ```
 
 **Para `make destroy`:**
 ```plaintext
+==> Removendo os addons (Grafana, Prometheus)...
+Addons removidos com sucesso.
 ==> Removendo o cluster EKS...
 Cluster EKS removido com sucesso.
 ==> Removendo a infraestrutura de rede (VPC)...
@@ -183,6 +193,12 @@ As cores no terminal ajudam a identificar o progresso:
 - **Amarelo (Aviso):** Etapas delicadas, como destruição de recursos.
 
 ---
+
+### **Observações Finais**
+
+1. **Planejamento:** Antes de aplicar ou destruir recursos, utilize `make plan` para revisar as alterações planejadas.
+2. **Segurança:** Certifique-se de armazenar arquivos sensíveis, como o estado Terraform, em locais seguros e com backups regulares.
+3. **Personalização:** Adapte os addons no arquivo `values-stack.yaml` para configurar Prometheus, Grafana e outros serviços conforme necessário.
 
 ## **Contribuições**
 
